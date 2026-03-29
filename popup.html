@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureScan</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <!-- Header: SecureScan logo, theme toggle, settings -->
+    <header class="main-header">
+      <div class="header-top">
+        <div class="brand">
+          <span class="logo-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L4 6v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V6l-8-4z" fill="currentColor" opacity="0.9"/>
+              <path d="M12 2v2.5L18 8v5.5c0 4.2-2.7 8.2-6 9.5V2z" fill="currentColor" opacity="0.5"/>
+            </svg>
+          </span>
+          <h1>SecureScan</h1>
+        </div>
+        <div class="header-actions">
+          <button id="themeToggle" class="icon-btn" title="Toggle dark/light mode" aria-label="Toggle theme">
+            <span class="theme-icon-dark">🌙</span>
+            <span class="theme-icon-light">☀️</span>
+          </button>
+          <button id="settingsBtn" class="icon-btn" title="Settings" aria-label="Settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+        </div>
+      </div>
+      <button id="scanBtn" class="scan-cta" title="Scan current page for security issues">
+        <span class="scan-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
+        </span>
+        <span id="scanBtnText">Scan current page</span>
+      </button>
+    </header>
+
+    <!-- Loading -->
+    <div id="loading" class="loading hidden">
+      <div class="scan-radar"></div>
+      <div class="loading-bar"></div>
+      <p>Analyzing page for security issues…</p>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="results hidden">
+      <div class="url-bar">
+        <span class="url-label">URL</span>
+        <span id="currentUrl" class="url-value"></span>
+      </div>
+
+      <!-- Security score ring + severity pills -->
+      <div class="score-and-badges">
+        <div class="score-ring-wrap">
+          <svg class="score-ring" viewBox="0 0 100 100">
+            <circle class="score-bg" cx="50" cy="50" r="42"/>
+            <circle id="scoreCircle" class="score-fill" cx="50" cy="50" r="42"/>
+          </svg>
+          <div class="score-value-wrap">
+            <span id="securityScore" class="score-value">—</span>
+            <span class="score-label">Score</span>
+          </div>
+        </div>
+        <div class="summary summary-pills">
+          <div class="pill critical" id="pillCritical" title="Critical issues">
+            <span class="pill-dot">🔴</span>
+            <span class="pill-count" id="criticalCount">0</span>
+            <span class="pill-label">Critical</span>
+          </div>
+          <div class="pill high" title="High severity">
+            <span class="pill-dot">🟠</span>
+            <span class="pill-count" id="highCount">0</span>
+            <span class="pill-label">High</span>
+          </div>
+          <div class="pill medium" title="Medium">
+            <span class="pill-dot">🟡</span>
+            <span class="pill-count" id="mediumCount">0</span>
+            <span class="pill-label">Medium</span>
+          </div>
+          <div class="pill low" title="Low">
+            <span class="pill-dot">🟢</span>
+            <span class="pill-count" id="lowCount">0</span>
+            <span class="pill-label">Low</span>
+          </div>
+          <div class="pill info" title="Info">
+            <span class="pill-dot">🔵</span>
+            <span class="pill-count" id="infoCount">0</span>
+            <span class="pill-label">Info</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile tab bar -->
+      <nav class="mobile-tabs" aria-label="Sections">
+        <button type="button" class="tab-btn active" data-tab="findings" title="Security findings">Findings</button>
+        <button type="button" class="tab-btn" data-tab="siteinfo" title="Site information">Site Info</button>
+        <button type="button" class="tab-btn" data-tab="performance" title="Performance">Performance</button>
+      </nav>
+
+      <div class="main-content">
+        <!-- Findings panel -->
+        <div class="panel findings-panel tab-panel" id="panelFindings">
+          <div class="panel-header">
+            <h2>Security findings</h2>
+          </div>
+          <div class="panel-content">
+            <div id="vulnerabilitiesInfo" class="vulnerabilities-info"></div>
+            <div class="vulnerabilities-section">
+              <h3>Critical & High</h3>
+              <div id="vulnerabilitiesList" class="findings-list"></div>
+            </div>
+            <div class="warnings-section">
+              <h3>Warnings</h3>
+              <div id="warningsList" class="findings-list"></div>
+            </div>
+            <div class="info-section">
+              <h3>Security Info</h3>
+              <div id="infoList" class="findings-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Site info + Performance panel -->
+        <div class="panel site-panel tab-panel" id="panelSiteInfo">
+          <div class="panel-header">
+            <h2>Site information</h2>
+          </div>
+          <div class="panel-content">
+            <div id="statsDashboard" class="stats-dashboard hidden"></div>
+            <div class="info-sections">
+              <div class="info-card">
+                <h3>Basic info</h3>
+                <div id="basicInfo" class="info-details"></div>
+              </div>
+              <div class="info-card">
+                <h3>Technology</h3>
+                <div id="technologyInfo" class="info-details"></div>
+              </div>
+              <div class="info-card">
+                <h3>Resources</h3>
+                <div id="resourcesInfo" class="info-details"></div>
+              </div>
+              <div class="info-card">
+                <h3>Forms</h3>
+                <div id="formsInfo" class="info-details"></div>
+              </div>
+              <div class="info-card">
+                <h3>Domain & security</h3>
+                <div id="domainInfo" class="info-details"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel performance-panel tab-panel" id="panelPerformance">
+          <div class="panel-header">
+            <h2>Performance</h2>
+          </div>
+          <div class="panel-content">
+            <div id="performanceInfo" class="info-details"></div>
+            <div id="perfMeters" class="perf-meters"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="copyBtn" class="btn btn-secondary" title="Copy summary to clipboard">Copy summary</button>
+        <button id="exportBtn" class="btn btn-primary" title="Export full report as HTML">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export report
+        </button>
+        <button id="clearBtn" class="btn btn-ghost" title="Clear results">Clear results</button>
+      </div>
+    </div>
+
+    <div id="noResults" class="no-results">
+      <div class="empty-state">
+        <span class="empty-icon">🛡️</span>
+        <p>Click <strong>Scan current page</strong> to analyze this page for security issues and collect site information.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings overlay -->
+  <div id="settingsOverlay" class="overlay hidden">
+    <div class="settings-panel">
+      <div class="settings-header">
+        <h2>Settings</h2>
+        <button id="settingsClose" class="icon-btn" aria-label="Close">✕</button>
+      </div>
+      <div class="settings-body">
+        <section>
+          <h3>Theme</h3>
+          <label class="toggle-row">
+            <span>Dark mode</span>
+            <input type="checkbox" id="settingDarkMode" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </section>
+        <section>
+          <h3>Warnings</h3>
+          <label>Scripts threshold (yellow) <input type="number" id="settingScriptsYellow" value="20" min="5" max="100"></label>
+          <label>Scripts threshold (red) <input type="number" id="settingScriptsRed" value="40" min="10" max="200"></label>
+          <label>Stylesheets threshold (yellow) <input type="number" id="settingStylesYellow" value="30" min="5" max="100"></label>
+          <label>Stylesheets threshold (red) <input type="number" id="settingStylesRed" value="50" min="10" max="200"></label>
+        </section>
+        <section>
+          <h3>Checks</h3>
+          <p class="settings-hint">All security checks are enabled by default.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

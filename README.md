@@ -119,7 +119,7 @@ This project is licensed under the [MIT License](LICENSE).
 ## 👤 Author
 
 **Your Name**
-- GitHub: [@your-username](https://github.com/your-username)
+- GitHub: [Padam Lohchab]([https://github.com/](https://github.com/PadamLohchab))
 
 ---
 
